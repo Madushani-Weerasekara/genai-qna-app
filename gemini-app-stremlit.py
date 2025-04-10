@@ -9,8 +9,8 @@ load_dotenv() # Loads the variables from .env file
 
 # Now we can instantiate our model object and generate chat completions
 llm = ChatGoogleGenerativeAI(
-    model = "gemmini - 1.5-pro",
-    temperatuere = 0,
+    model = "gemini-1.5-pro",
+    temperature = 0,
     max_tokens= None,
     timeout=None,
     max_retries=2
@@ -19,10 +19,18 @@ llm = ChatGoogleGenerativeAI(
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", "You are a chatbot"),
-        ("Human", "Question : {question}")
+        ("human", "Question : {question}")
 
     ]
 )
 
 st.title('Langchain Demo with Gemini')
-input_text = st.time_input("Enter your question here")
+input_text = st.text_input("Enter your question here")
+
+output_parser = StrOutputParser()
+
+chain = prompt|llm|output_parser
+
+if input_text:
+    st.write(chain.invoke({'question' : input_text}))
+
